@@ -4,11 +4,14 @@ import (
 	"engo.io/engo"
 	"engo.io/engo/common"
 	"engo.io/ecs"
-	"log"
 	"image/color"
+
+	"github.com/tjheslin1/SurvivalGame/systems"
 )
 
-type myScene struct{}
+type myScene struct {
+
+}
 
 func (*myScene) Type() string {
 	return "myGame"
@@ -23,33 +26,15 @@ func (*myScene) Preload() {
 // Setup is called before the main loop starts. It allows you
 // to add entities and systems to your Scene.
 func (*myScene) Setup(world *ecs.World) {
-	world.AddSystem(&common.RenderSystem{})
+	cityBuildingSystem := &systems.CityBuildingSystem{}
+	engo.Input.RegisterButton("AddCity", engo.C)
 
 	common.SetBackground(color.White)
 
-	city := City{BasicEntity: ecs.NewBasic()}
-	city.SpaceComponent = common.SpaceComponent{
-		Position: engo.Point{10, 10},
-		Width:    303,
-		Height:   641,
-	}
+	world.AddSystem(&common.RenderSystem{})
+	world.AddSystem(&common.MouseSystem{})
 
-	texture, err := common.LoadedSprite("textures/city.png")
-	if err != nil {
-		log.Println("Unable to load texture: " + err.Error())
-	}
-
-	city.RenderComponent = common.RenderComponent{
-		Drawable: texture,
-		Scale:    engo.Point{1, 1},
-	}
-
-	for _, system := range world.Systems() {
-		switch sys := system.(type) {
-		case *common.RenderSystem:
-			sys.Add(&city.BasicEntity, &city.RenderComponent, &city.SpaceComponent)
-		}
-	}
+	world.AddSystem(cityBuildingSystem)
 }
 
 func main() {
@@ -59,10 +44,4 @@ func main() {
 		Height: 400,
 	}
 	engo.Run(opts, &myScene{})
-}
-
-type City struct {
-	ecs.BasicEntity
-	common.RenderComponent
-	common.SpaceComponent
 }
