@@ -5,7 +5,6 @@ import (
 	"engo.io/engo"
 	"github.com/tjheslin1/SurvivalGame/entities"
 	"engo.io/engo/common"
-	"fmt"
 )
 
 type CharacterSystem struct {
