@@ -15,20 +15,15 @@ type CharacterSystem struct {
 
 // @Override
 func (pm *CharacterSystem) Remove(ecs.BasicEntity) {
-	// TODO
+	
 }
 
 // @Override
 func (pm *CharacterSystem) Update(dt float32) {
-	if v := engo.Input.Axis("vertical").Value(); v != 0 {
-		pm.character.Position.X += v
-	}
+	speed := engo.GameWidth() * dt
 
-	if v := engo.Input.Axis("horizontal").Value(); v != 0 {
-		pm.character.Position.Y += v
-	}
-
-	fmt.Printf("X: %f      -       Y: %f\n", &pm.character.Position.X, pm.character.Position.Y)
+	pm.character.Position.X = pm.character.Position.X + speed * pm.character.SpeedComponent.Point.X
+	pm.character.Position.Y = pm.character.Position.Y + speed * pm.character.SpeedComponent.Point.Y
 
 	//if btn := engo.Input.Button("action"); btn.JustPressed() {
 	//	fmt.Println("DOWN!")
