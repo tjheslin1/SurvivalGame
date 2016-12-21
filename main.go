@@ -26,7 +26,6 @@ func (*myScene) Preload() {
 // Setup is called before the main loop starts. It allows you
 // to add entities and systems to your Scene.
 func (*myScene) Setup(world *ecs.World) {
-	cityBuildingSystem := &systems.CityBuildingSystem{}
 	engo.Input.RegisterButton("AddCity", engo.C)
 
 	common.SetBackground(color.White)
@@ -34,7 +33,12 @@ func (*myScene) Setup(world *ecs.World) {
 	world.AddSystem(&common.RenderSystem{})
 	world.AddSystem(&common.MouseSystem{})
 
-	world.AddSystem(cityBuildingSystem)
+	kbs := common.NewKeyboardScroller(
+		400, engo.DefaultHorizontalAxis,
+		engo.DefaultVerticalAxis)
+	world.AddSystem(kbs)
+
+	world.AddSystem(&systems.CityBuildingSystem{})
 }
 
 func main() {
@@ -42,6 +46,7 @@ func main() {
 		Title: "Hello World",
 		Width:  400,
 		Height: 400,
+		StandardInputs: true,
 	}
 	engo.Run(opts, &myScene{})
 }
